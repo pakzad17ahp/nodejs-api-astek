@@ -6,8 +6,11 @@ import {
   UpdateDateColumn,
   ManyToMany,
   JoinTable,
+  BeforeInsert,
+  BeforeUpdate,
 } from "typeorm";
 import { Role } from "../role/role.model";
+import * as bcrypt from "bcrypt";
 
 @Entity({ name: "users" })
 export class User {
@@ -38,4 +41,17 @@ export class User {
   @ManyToMany(() => Role, (role) => role.users, { cascade: true })
   @JoinTable({ name: "user_roles" })
   roles!: Role[];
+
+  @BeforeInsert()
+  @BeforeUpdate()
+  async hashPassword() {
+    if (this.password) {
+      const salt = await bcrypt.genSalt(10);
+      this.password = await bcrypt.hash(this.password, salt);
+    }
+  }
+
+  async comparePassword(plainPassword: string): Promise<boolean> {
+    return bcrypt.compare(plainPassword, this.password);
+  }
 }
