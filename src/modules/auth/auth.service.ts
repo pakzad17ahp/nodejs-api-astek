@@ -8,6 +8,7 @@ export class AuthService {
       relations: ["role"],
     });
     if (!user) return null;
+
     const isMatch = await user.comparePassword(password);
     if (!isMatch) return null;
 

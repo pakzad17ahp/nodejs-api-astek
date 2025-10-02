@@ -1,21 +1,27 @@
-import { Request, Response } from "express";
-import { ProductService } from "./product.service";
+import { NextFunction, Request, Response } from 'express';
+import { ProductService } from './product.service';
+import { ApiError } from '../../shared/utils/api-error';
+import { sendSuccess } from '../../shared/utils/response';
 
 export class ProductController {
   productService = new ProductService();
 
   async getAll(req: Request, res: Response) {
     const products = await this.productService.getAll();
-    return res.status(200).json(products);
+    sendSuccess(res, products);
   }
 
-  async getById(req: Request, res: Response) {
-    const product = await this.productService.getById(req.params.id);
-    if (!product) return res.status(404).json({ message: "Product_not_found" });
-    return res.status(200).json(product);
+  async getById(req: Request, res: Response, next: NextFunction) {
+    try {
+      const product = await this.productService.getById(req.params.id);
+      if (!product) next(new ApiError('Product not found', 404));
+      sendSuccess(res, product);
+    } catch (err: any) {
+      next(new ApiError(err));
+    }
   }
 
-  async create(req: Request, res: Response) {
+  async create(req: Request, res: Response, next: NextFunction) {
     try {
       const { name, product_type, color } = req.body;
       const userId = req.user.id;
@@ -26,14 +32,13 @@ export class ProductController {
         color,
         user_id: userId,
       });
-
-      res.status(201).json(product);
-    } catch (err) {
-      res.status(500).json({ message: "Error creating product", error: err });
+      sendSuccess(res, product, 'Product created successfully', 201);
+    } catch (err: any) {
+      next(new ApiError(err));
     }
   }
 
-  async update(req: Request, res: Response) {
+  async update(req: Request, res: Response, next: NextFunction) {
     try {
       const { name, product_type, color } = req.body;
       const userId = req.user.id;
@@ -45,12 +50,11 @@ export class ProductController {
         user_id: userId,
       });
 
-      if (!product)
-        return res.status(404).json({ message: "Product_not_found" });
+      if (!product) next(new ApiError('Product not found', 404));
 
-      res.status(201).json(product);
-    } catch (err) {
-      res.status(500).json({ message: "Error updating product", error: err });
+      sendSuccess(res, product, 'Product updated successfully', 201);
+    } catch (err: any) {
+      next(new ApiError(err));
     }
   }
 }

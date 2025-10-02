@@ -2,6 +2,7 @@ import express from "express";
 import routes from "./routes";
 import { AppDataSource } from "./config/data-source";
 import { createDatabaseIfNotExists } from "./config/create-db";
+import { errorMiddleware } from "./shared/middlewares/error.middleware";
 
 const app = express();
 
@@ -20,5 +21,7 @@ const init = async () => {
 init().catch((err) => {
   console.error("Error initializing app:", err);
 });
+
+app.use(errorMiddleware);
 
 export default app;

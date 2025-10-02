@@ -1,5 +1,6 @@
-import { Product } from "./product.model";
-import { ProductRepository } from "./product.repository";
+import { ApiError } from '../../shared/utils/api-error';
+import { Product } from './product.model';
+import { ProductRepository } from './product.repository';
 
 export class ProductService {
   async getAll(): Promise<Product[]> {

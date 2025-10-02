@@ -1,15 +1,15 @@
-import { User } from "./user.model";
-import { UserRepository } from "./user.repository";
+import { User } from './user.model';
+import { UserRepository } from './user.repository';
 
 export class UserService {
   async getAll(): Promise<User[]> {
-    return await UserRepository.find({ relations: ["role"] });
+    return await UserRepository.find({ relations: ['role'] });
   }
 
   async getById(id: string): Promise<User | null> {
     return await UserRepository.findOne({
       where: { id },
-      relations: ["role"],
+      relations: ['role'],
     });
   }
 

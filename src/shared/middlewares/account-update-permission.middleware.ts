@@ -1,16 +1,17 @@
-import { Request, Response, NextFunction } from "express";
+import { Request, Response, NextFunction } from 'express';
+import { ApiError } from '../utils/api-error';
 
 export const accountUpdatePermission = (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   if (!req.user.is_super_admin && req.body.is_super_admin) {
-    return res.status(401).json({ message: "Unauthorized" });
+    next(new ApiError('Unauthorized : User does not require permission', 401));
   }
 
   if (!req.user.role.account.Assign && req.body.role)
-    return res.status(401).json({ message: "Unauthorized" });
+    next(new ApiError('Unauthorized : User does not require permission', 401));
 
   next();
 };

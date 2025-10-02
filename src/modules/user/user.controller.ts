@@ -1,28 +1,42 @@
-import { Request, Response } from "express";
-import { UserService } from "./user.service";
+import { NextFunction, Request, Response } from 'express';
+import { UserService } from './user.service';
+import { ApiError } from '../../shared/utils/api-error';
+import { sendSuccess } from '../../shared/utils/response';
 
 export class UserController {
-  constructor(private readonly userService = new UserService()) {}
+  userService = new UserService();
 
   async getAll(req: Request, res: Response) {
     const users = await this.userService.getAll();
-    res.json(users);
+    sendSuccess(res, users);
   }
 
-  async getById(req: Request, res: Response) {
-    const user = await this.userService.getById(req.params.id);
-    if (!user) res.status(404).json({ message: "User_not_found" });
-    res.json(user);
+  async getById(req: Request, res: Response, next: NextFunction) {
+    try {
+      const user = await this.userService.getById(req.params.id);
+      if (!user) next(new ApiError('User not found', 404));
+      sendSuccess(res, user, '', 200);
+    } catch (err: any) {
+      next(new ApiError(err));
+    }
   }
 
-  async create(req: Request, res: Response) {
-    const user = await this.userService.create(req.body);
-    res.status(201).json(user);
+  async create(req: Request, res: Response, next: NextFunction) {
+    try {
+      const user = await this.userService.create(req.body);
+      sendSuccess(res, user, 'User created successfully', 201);
+    } catch (err: any) {
+      next(new ApiError(err));
+    }
   }
 
-  async update(req: Request, res: Response) {
-    const user = await this.userService.update(req.params.id, req.body);
-    if (!user) return res.status(404).json({ message: "User_not_found" });
-    res.json(user);
+  async update(req: Request, res: Response, next: NextFunction) {
+    try {
+      const user = await this.userService.update(req.params.id, req.body);
+      if (!user) next(new ApiError('User not found', 404));
+      sendSuccess(res, user, 'User updated successfully', 201);
+    } catch (err: any) {
+      next(new ApiError(err));
+    }
   }
 }

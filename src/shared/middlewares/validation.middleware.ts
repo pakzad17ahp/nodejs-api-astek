@@ -1,6 +1,7 @@
 import { plainToInstance } from "class-transformer";
 import { validate } from "class-validator";
 import { Request, Response, NextFunction } from "express";
+import { ApiError } from "../utils/api-error";
 
 export const validationMiddleware = (dtoClass: any) => {
   return async (req: Request, res: Response, next: NextFunction) => {
@@ -8,7 +9,10 @@ export const validationMiddleware = (dtoClass: any) => {
     const errors = await validate(dtoObj);
 
     if (errors.length > 0) {
-      return res.status(400).json(errors);
+      const messages = errors
+        .map((e) => Object.values(e.constraints || {}))
+        .flat();
+      return next(new ApiError(messages.join(", "), 400));
     }
     next();
   };
