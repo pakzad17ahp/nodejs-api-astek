@@ -3,13 +3,13 @@ import { UserRepository } from "./user.repository";
 
 export class UserService {
   async getAll(): Promise<User[]> {
-    return await UserRepository.find({ relations: ["roles"] });
+    return await UserRepository.find({ relations: ["role"] });
   }
 
   async getById(id: string): Promise<User | null> {
     return await UserRepository.findOne({
       where: { id },
-      relations: ["roles"],
+      relations: ["role"],
     });
   }
 

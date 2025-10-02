@@ -21,4 +21,8 @@ export class UpdateUserDto {
   @IsBoolean()
   @IsOptional()
   is_super_admin?: boolean;
+
+  @IsBoolean()
+  @IsOptional()
+  role?: boolean;
 }

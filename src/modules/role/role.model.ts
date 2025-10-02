@@ -1,27 +1,42 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  ManyToMany,
-  JoinTable,
-} from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
 import { User } from "../user/user.model";
-import { Permission } from "../permission/permission.model";
 
-@Entity({ name: "roles" })
+class PermissionSet {
+  create!: boolean;
+  update!: boolean;
+  view!: boolean;
+}
+
+class UserPermissionSet extends PermissionSet {
+  Assign!: boolean;
+}
+
+@Entity("roles")
 export class Role {
   @PrimaryGeneratedColumn("uuid")
   id!: string;
 
-  @Column({ unique: true })
+  @Column({ type: "varchar", unique: true })
   name!: string;
 
-  @ManyToMany(() => Permission, (permission) => permission.roles, {
-    cascade: true,
+  @Column({
+    type: "jsonb",
+    default: { create: false, update: false, view: false, Assign: false },
   })
-  @JoinTable({ name: "role_permissions" })
-  permissions!: Permission[];
+  account!: UserPermissionSet;
 
-  @ManyToMany(() => User, (user) => user.roles)
+  @Column({
+    type: "jsonb",
+    default: { create: false, update: false, view: false },
+  })
+  product!: PermissionSet;
+
+  @Column({
+    type: "jsonb",
+    default: { create: false, update: false, view: false },
+  })
+  role!: PermissionSet;
+
+  @OneToMany(() => User, (user) => user.role)
   users!: User[];
 }

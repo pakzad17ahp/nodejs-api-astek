@@ -4,10 +4,9 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
-  ManyToMany,
-  JoinTable,
   BeforeInsert,
   BeforeUpdate,
+  ManyToOne,
 } from "typeorm";
 import { Role } from "../role/role.model";
 import * as bcrypt from "bcrypt";
@@ -17,19 +16,19 @@ export class User {
   @PrimaryGeneratedColumn("uuid")
   id!: string;
 
-  @Column({ unique: true })
+  @Column({ type: "varchar", unique: true })
   username!: string;
 
-  @Column()
+  @Column({ type: "varchar" })
   name!: string;
 
-  @Column({ unique: true })
+  @Column({ type: "varchar", unique: true })
   phone!: string;
 
-  @Column()
+  @Column({ type: "varchar" })
   password!: string;
 
-  @Column({ default: false })
+  @Column({ type: "boolean", default: false })
   is_super_admin!: boolean;
 
   @CreateDateColumn({ type: "timestamp with time zone" })
@@ -38,9 +37,8 @@ export class User {
   @UpdateDateColumn({ type: "timestamp with time zone" })
   updated_at!: Date;
 
-  @ManyToMany(() => Role, (role) => role.users, { cascade: true })
-  @JoinTable({ name: "user_roles" })
-  roles!: Role[];
+  @ManyToOne(() => Role, (role) => role.users, { eager: true })
+  role!: Role;
 
   @BeforeInsert()
   @BeforeUpdate()
