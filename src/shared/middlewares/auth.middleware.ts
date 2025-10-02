@@ -5,7 +5,16 @@ import { UserRepository } from "../../modules/user/user.repository";
 interface JwtPayload {
   id: string;
   username: string;
+  is_super_admin: boolean;
   role: string;
+}
+
+declare global {
+  namespace Express {
+    interface Request {
+      user?: any;
+    }
+  }
 }
 
 export const authMiddleware = (fetchFromDB: boolean = false) => {
@@ -25,9 +34,13 @@ export const authMiddleware = (fetchFromDB: boolean = false) => {
         });
 
         if (!user) return res.status(401).json({ message: "Unauthorized" });
-      }
-
-      (req as any).user = decoded;
+        req.user = {
+          id: user.id,
+          username: user.username,
+          is_super_admin: user.is_super_admin,
+          role: user.role,
+        };
+      } else req.user = decoded;
 
       next();
     } catch (err) {

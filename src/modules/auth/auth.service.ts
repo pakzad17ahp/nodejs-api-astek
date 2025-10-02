@@ -14,8 +14,8 @@ export class AuthService {
     const payload = {
       id: user.id,
       username: user.username,
-      role: user.role,
       is_super_admin: user.is_super_admin,
+      role: user.role,
     };
 
     return jwt.sign(payload, process.env.JWT_SECRET!, { expiresIn: "1h" });
