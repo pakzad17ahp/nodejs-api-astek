@@ -5,6 +5,7 @@ import {
   MaxLength,
   IsString,
   IsBoolean,
+  IsUUID,
 } from "class-validator";
 
 export class UpdateUserDto {
@@ -22,7 +23,7 @@ export class UpdateUserDto {
   @IsOptional()
   is_super_admin?: boolean;
 
-  @IsBoolean()
+  @IsUUID()
   @IsOptional()
-  role?: boolean;
+  role?: string;
 }

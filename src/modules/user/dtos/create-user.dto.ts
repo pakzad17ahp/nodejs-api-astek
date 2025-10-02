@@ -4,6 +4,7 @@ import {
   IsNumberString,
   MaxLength,
   MinLength,
+  IsUUID,
 } from "class-validator";
 
 export class CreateUserDto {
@@ -20,4 +21,8 @@ export class CreateUserDto {
 
   @Length(6, 20)
   password!: string;
+
+  @IsUUID()
+  @IsNotEmpty()
+  role!: string;
 }
