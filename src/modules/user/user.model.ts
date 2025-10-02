@@ -7,9 +7,11 @@ import {
   BeforeInsert,
   BeforeUpdate,
   ManyToOne,
+  OneToMany,
 } from "typeorm";
 import { Role } from "../role/role.model";
 import * as bcrypt from "bcrypt";
+import { Product } from "../product/product.model";
 
 @Entity({ name: "users" })
 export class User {
@@ -39,6 +41,9 @@ export class User {
 
   @ManyToOne(() => Role, (role) => role.users, { eager: true })
   role!: Role;
+
+  @OneToMany(() => Product, (product) => product.user)
+  products!: Product[];
 
   @BeforeInsert()
   @BeforeUpdate()
