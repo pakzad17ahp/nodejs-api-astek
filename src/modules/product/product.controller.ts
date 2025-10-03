@@ -7,13 +7,16 @@ export class ProductController {
   productService = new ProductService();
 
   async getAll(req: Request, res: Response) {
-    const products = await this.productService.getAll();
+    const products = await this.productService.getAll(req.user);
     sendSuccess(res, products);
   }
 
   async getById(req: Request, res: Response, next: NextFunction) {
     try {
-      const product = await this.productService.getById(req.params.id);
+      const product = await this.productService.getById(
+        req.params.id,
+        req.user,
+      );
       if (!product) next(new ApiError('Product not found', 404));
       sendSuccess(res, product);
     } catch (err: any) {
