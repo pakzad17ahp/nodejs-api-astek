@@ -13,18 +13,63 @@ import { UpdateProductDto } from './dtos/update-product.dto';
 const productController = new ProductController();
 const route = Router();
 
+/**
+ * @swagger
+ * /api/products:
+ *   get:
+ *     summary: Get all products
+ *     tags: [Products]
+ *     responses:
+ *       200:
+ *         description: List of products
+ */
 route.get(
   '/',
   authMiddleware(false),
   productController.getAll.bind(productController),
 );
 
+/**
+ * @swagger
+ * /api/products/{id}:
+ *   get:
+ *     summary: Get product by ID
+ *     tags: [Products]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Product ID
+ *     responses:
+ *       200:
+ *         description: Product data
+ *       404:
+ *         description: Product not found
+ */
 route.get(
   '/:id',
   authMiddleware(false),
   productController.getById.bind(productController),
 );
 
+/**
+ * @swagger
+ * /api/products:
+ *   post:
+ *     summary: Create a new product
+ *     tags: [Products]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/ProductInput'
+ *     responses:
+ *       201:
+ *         description: Product created successfully
+ */
 route.post(
   '/',
   authMiddleware(false),
@@ -33,6 +78,30 @@ route.post(
   productController.create.bind(productController),
 );
 
+/**
+ * @swagger
+ * /api/products/{id}:
+ *   put:
+ *     summary: Update a product
+ *     tags: [Products]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/ProductInput'
+ *     responses:
+ *       200:
+ *         description: Product updated successfully
+ *       404:
+ *         description: Product not found
+ */
 route.put(
   '/:id',
   authMiddleware(false),
