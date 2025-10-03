@@ -15,7 +15,7 @@ export class RoleController {
   async getById(req: Request, res: Response, next: NextFunction) {
     try {
       const role = await this.roleService.getById(req.params.id);
-      if (!role) next(new ApiError('Role not found', 404));
+      if (!role) return next(new ApiError('Role not found', 404));
       sendSuccess(res, role);
     } catch (err: any) {
       next(new ApiError(err));
@@ -34,7 +34,7 @@ export class RoleController {
   async update(req: Request, res: Response, next: NextFunction) {
     try {
       const role = await this.roleService.update(req.params.id, req.body);
-      if (!role) next(new ApiError('Role not found', 404));
+      if (!role) return next(new ApiError('Role not found', 404));
       sendSuccess(res, role, 'Role updated successfully', 201);
     } catch (err: any) {
       next(new ApiError(err));

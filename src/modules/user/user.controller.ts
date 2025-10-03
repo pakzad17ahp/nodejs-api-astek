@@ -14,7 +14,7 @@ export class UserController {
   async getById(req: Request, res: Response, next: NextFunction) {
     try {
       const user = await this.userService.getById(req.params.id);
-      if (!user) next(new ApiError('User not found', 404));
+      if (!user) return next(new ApiError('User not found', 404));
       sendSuccess(res, user, '', 200);
     } catch (err: any) {
       next(new ApiError(err));
@@ -33,7 +33,7 @@ export class UserController {
   async update(req: Request, res: Response, next: NextFunction) {
     try {
       const user = await this.userService.update(req.params.id, req.body);
-      if (!user) next(new ApiError('User not found', 404));
+      if (!user) return next(new ApiError('User not found', 404));
       sendSuccess(res, user, 'User updated successfully', 201);
     } catch (err: any) {
       next(new ApiError(err));

@@ -6,18 +6,20 @@ import { ProductRepository } from './product.repository';
 export class ProductService {
   async getAll(user: any): Promise<Product[]> {
     if (canViewAllProducts(user)) {
-      return await ProductRepository.find({ relations: ['user'] });
+      return await ProductRepository.find({
+        // relations: ['user'],
+      });
     }
     return await ProductRepository.find({
       where: { user: { id: user.id } },
-      relations: ['user'],
+      // relations: ['user'],
     });
   }
 
   async getById(id: string, user: any): Promise<Product | null> {
     const product = await ProductRepository.findOne({
       where: { id },
-      relations: ['user'],
+      // relations: ['user'],
     });
 
     if (!product) return null;

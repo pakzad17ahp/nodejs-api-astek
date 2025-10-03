@@ -17,7 +17,7 @@ export class ProductController {
         req.params.id,
         req.user,
       );
-      if (!product) next(new ApiError('Product not found', 404));
+      if (!product) return next(new ApiError('Product not found', 404));
       sendSuccess(res, product);
     } catch (err: any) {
       next(new ApiError(err));
@@ -53,7 +53,7 @@ export class ProductController {
         user_id: userId,
       });
 
-      if (!product) next(new ApiError('Product not found', 404));
+      if (!product) return next(new ApiError('Product not found', 404));
 
       sendSuccess(res, product, 'Product updated successfully', 201);
     } catch (err: any) {
